@@ -1,30 +1,130 @@
-# BookNook — Vite + React Demo
+# BookNook
 
-This project is a small demo of the BookNook UI built with Vite, React (JavaScript), Tailwind CSS, and Lucide icons.
+A minimalist book borrowing and purchasing SPA built with React, Tailwind CSS, and Lucide Icons.
 
-Quick start
+## Features
 
-1. Open a terminal and change to the project folder:
+- **Account-Based Login**: Demo accounts with per-user data persistence
+- **Browse Books**: Grid layout of available books with pricing and details
+- **Borrow Books**: 14-day free borrowing with real-time countdown timer
+- **Buy Books**: Simulated card payment flow for purchasing
+- **Track Borrowed Books**: Monitor due dates and overdue status
+- **Late Return Fees**: $2/day charge for books returned after 3-day grace period
+- **Persistent Storage**: All user data saved to localStorage
 
-```powershell
-cd D:/gdgoc/booknook
-```
+## Demo Accounts
 
-2. Install dependencies:
+| Username | Password | Books |
+|----------|----------|-------|
+| `alice` | `password123` | Designing Calm (borrowed), The First Chapter (owned) |
+| `bob` | `letmein` | Small Things (owned) |
+| `guest` | — | No password; read-only access |
 
-```powershell
+## Tech Stack
+
+- **React 18**: Component framework with hooks
+- **Vite 5.4.21**: Lightning-fast build tool with HMR
+- **Tailwind CSS 3.4.8**: Utility-first styling with custom Google color palette
+- **Lucide Icons 0.269.0**: Clean SVG icons
+- **PostCSS & Autoprefixer**: CSS processing pipeline
+
+## Quick Start
+
+### 1. Install Dependencies
+
+```bash
+cd d:\gdgoc\booknook
 npm install
 ```
 
-3. Start the dev server:
+### 2. Start Dev Server
 
-```powershell
+```bash
 npm run dev
 ```
 
-Then open the printed localhost URL (default: http://localhost:5173).
+Open [http://localhost:5173](http://localhost:5173) in your browser.
 
-Notes
-- State is persisted in `localStorage`.
-- Payment is simulated for demo purposes.
-- Colors follow Google's core palette using Tailwind extension.
+### 3. Build for Production
+
+```bash
+npm run build
+```
+
+## Project Structure
+
+```
+src/
+├── components/
+│   ├── Header.jsx          # Top navigation & user greeting
+│   ├── LoginScreen.jsx     # Authentication entry point
+│   ├── Browse.jsx          # Book grid for browsing
+│   ├── BookCard.jsx        # Individual book display
+│   ├── MyBooks.jsx         # User's borrowed & owned books
+│   ├── BorrowTimer.jsx     # Live countdown & overdue status
+│   ├── PaymentModal.jsx    # Card payment simulation
+│   └── LateFeeModal.jsx    # Late return fee collection
+├── hooks/
+│   └── useLocalStorage.js  # Custom hook for persistent state
+├── utils.js                # Utility functions (fmtPrice, addDays, shortDate)
+├── styles/
+│   └── index.css           # Tailwind directives & custom utilities
+├── main.jsx                # React entry point
+├── App.jsx                 # Main app orchestration
+└── index.html              # HTML entry point
+```
+
+## Key Business Logic
+
+### Borrowing Flow
+1. User clicks **Borrow** on a book card
+2. System creates borrowed item with 14-day due date
+3. Item appears in **My Books** tab with live countdown timer
+4. User can mark book as **Received** (visual confirmation)
+
+### Return Flow
+1. User clicks **Return** on a borrowed book
+2. If overdue (>3 days from borrow date):
+   - Late fee modal appears: $2 per day overdue
+   - User must pay fee to complete return
+3. If on-time (≤3 days):
+   - Book removed immediately, no fee
+
+### Buying Flow
+1. User clicks **Buy** on a book card
+2. Payment modal appears with card form
+3. Simulates 1.4–2.4s processing
+4. Book added to **My Books** as owned item
+
+### Data Persistence
+
+- Per-user book list stored in localStorage as `booknook_items_<username>`
+- Current user stored in `booknook_user`
+- Active tab stored in `booknook_active`
+- All data cleared on logout
+
+## Mock Data
+
+### Books (8 titles)
+Each book has: id, title, author, price, and seed (for consistent placeholder images)
+
+### Accounts (2 demo users + guest)
+- **alice** / password123 — has 1 borrowed & 1 owned book
+- **bob** / letmein — has 1 owned book
+- **guest** — read-only, no authentication
+
+## Color Palette
+
+Google-inspired minimalist colors:
+- **Blue**: `#4285F4` (primary actions, BookNook logo)
+- **Red**: `#EA4335` (alerts, late fees)
+- **Yellow**: `#FBBC05` (accents)
+- **Green**: `#34A853` (confirmations, received status)
+
+## Development Notes
+
+- Book images use seed-based placeholder service (picsum.photos)
+- Timer updates every 1 second for real-time countdown
+- All transactions are simulated; no real payment processing
+- State persists across page reloads via localStorage
+- Components are modular and accept clean prop interfaces
