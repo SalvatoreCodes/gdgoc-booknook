@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 
 export default function Signup({ onCreateAccount, onCancel }){
   const [username, setUsername] = useState('')
+  const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [displayName, setDisplayName] = useState('')
   const [error, setError] = useState(null)
@@ -12,10 +13,11 @@ export default function Signup({ onCreateAccount, onCancel }){
     setError(null)
     const u = username.trim().toLowerCase()
     if(!u) return setError('Choose a username')
+    if(!email) return setError('Enter an email')
     if(!password) return setError('Choose a password')
     setLoading(true)
     try{
-      const res = await onCreateAccount({ username: u, password, displayName: displayName || u })
+      const res = await onCreateAccount({ username: u, email: email.trim(), password, displayName: displayName || u })
       if(!res || !res.success) setError(res?.message || 'Unable to create account')
     }catch(err){ setError('Error creating account') }
     setLoading(false)
@@ -34,8 +36,12 @@ export default function Signup({ onCreateAccount, onCancel }){
 
         {error && <div className="mb-4 text-sm text-red-600">{error}</div>}
 
+
         <label className="block text-sm text-gray-600 mb-2">Username</label>
         <input value={username} onChange={e=>setUsername(e.target.value)} className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-gblue transition" placeholder="username" />
+
+        <label className="block text-sm text-gray-600 mt-4 mb-2">Email</label>
+        <input value={email} onChange={e=>setEmail(e.target.value)} className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-gblue transition" placeholder="you@example.com" />
 
         <label className="block text-sm text-gray-600 mt-4 mb-2">Display name (optional)</label>
         <input value={displayName} onChange={e=>setDisplayName(e.target.value)} className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-gblue transition" placeholder="Your name" />

@@ -18,7 +18,6 @@ A minimalist book borrowing and purchasing SPA built with React, Tailwind CSS, a
 |----------|----------|-------|
 | `alice` | `password123` | Designing Calm (borrowed), The First Chapter (owned) |
 | `bob` | `letmein` | Small Things (owned) |
-| `guest` | — | No password; read-only access |
 
 ## Tech Stack
 
@@ -108,10 +107,10 @@ src/
 ### Books (8 titles)
 Each book has: id, title, author, price, and seed (for consistent placeholder images)
 
-### Accounts (2 demo users + guest)
+### Accounts (2 demo users)
 - **alice** / password123 — has 1 borrowed & 1 owned book
 - **bob** / letmein — has 1 owned book
-- **guest** — read-only, no authentication
+
 
 ## Color Palette
 
@@ -128,3 +127,56 @@ Google-inspired minimalist colors:
 - All transactions are simulated; no real payment processing
 - State persists across page reloads via localStorage
 - Components are modular and accept clean prop interfaces
+
+## Firebase (optional)
+
+This project can integrate with Firebase Auth and Firestore to persist users, the book catalog, and per-user libraries.
+
+Setup:
+
+1. Create a Firebase project and enable **Authentication (Email/Password)** and **Firestore**.
+2. Add Firebase config to a file at the project root named `.env.local` with Vite variables:
+
+```
+VITE_FIREBASE_API_KEY=...
+VITE_FIREBASE_AUTH_DOMAIN=...
+VITE_FIREBASE_PROJECT_ID=...
+VITE_FIREBASE_STORAGE_BUCKET=...
+VITE_FIREBASE_MESSAGING_SENDER_ID=...
+VITE_FIREBASE_APP_ID=...
+```
+
+3. Install dependencies and start the app:
+
+```powershell
+cd d:\gdgoc\booknook
+npm install
+npm run dev
+```
+
+Seeding the `books` collection:
+
+This repo includes `scripts/seedFirestore.js` which uses the Firebase Admin SDK to push the embedded `MOCK_BOOKS` into your Firestore `books` collection.
+
+Prerequisites:
+- Create a Firebase service account and download its JSON key.
+- Set `GOOGLE_APPLICATION_CREDENTIALS` environment variable to the path of that JSON file.
+
+Then run:
+
+```powershell
+npm run seed:books
+```
+
+Firestore rules example:
+
+- File: `firestore.rules` (provided in the project root)
+- Deploy rules using the Firebase CLI:
+
+```powershell
+firebase deploy --only firestore:rules
+```
+
+Security notes:
+- The example rules allow public reads of `books`, and restrict reads/writes for `users/{uid}` and `user_books/{uid}` to the authenticated user with the same UID. Adjust rules to your needs for production.
+
