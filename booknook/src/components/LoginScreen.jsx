@@ -1,15 +1,19 @@
 import React, { useState } from 'react'
+import Signup from './Signup'
 
-export default function LoginScreen({onLogin}){
+export default function LoginScreen({onLogin, onCreateAccount}){
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState(null)
+  const [showSignup, setShowSignup] = useState(false)
 
   function submit(){
     setError(null)
     const ok = onLogin(username.trim(), password)
     if(!ok) setError('Invalid credentials. Try username/password from the demo accounts (alice/password123, bob/letmein) or use Guest.')
   }
+
+  if(showSignup) return <Signup onCreateAccount={onCreateAccount} onCancel={()=>setShowSignup(false)} />
 
   return (
     <div className="flex items-center justify-center min-h-screen">
@@ -35,7 +39,7 @@ export default function LoginScreen({onLogin}){
           <button onClick={() => { setUsername('guest'); setPassword(''); const ok = onLogin('guest', ''); if(!ok) setError('Unable to sign in as Guest') }} className="py-3 px-4 rounded-lg border border-gray-200">Try Guest</button>
         </div>
 
-        <p className="text-xs text-gray-400 mt-4">Demo accounts: <span className="font-medium">alice / password123</span>, <span className="font-medium">bob / letmein</span>.</p>
+        <p className="text-xs text-gray-400 mt-4">Demo accounts: <span className="font-medium">alice / password123</span>, <span className="font-medium">bob / letmein</span>. <button onClick={()=>setShowSignup(true)} className="ml-2 underline text-gblue">Create account</button></p>
       </div>
     </div>
   )

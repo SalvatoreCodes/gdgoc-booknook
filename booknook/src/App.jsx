@@ -91,6 +91,19 @@ const MOCK_ACCOUNTS = [
   }
 ]
 
+function loadAccounts(){
+  try{
+    const raw = localStorage.getItem('booknook_accounts')
+    if(raw) return JSON.parse(raw)
+  }catch(e){ }
+  try{ localStorage.setItem('booknook_accounts', JSON.stringify(MOCK_ACCOUNTS)) }catch(e){}
+  return MOCK_ACCOUNTS
+}
+
+function saveAccounts(accounts){
+  try{ localStorage.setItem('booknook_accounts', JSON.stringify(accounts)) }catch(e){}
+}
+
 export default function App(){
   const [user, setUser] = useLocalStorage('booknook_user', null)
   const [active, setActive] = useLocalStorage('booknook_active', 'browse')
@@ -102,7 +115,7 @@ export default function App(){
 
   useEffect(()=>{
     if(!user){ document.title = 'BookNook'; setMyBooks([]); return }
-    const acct = MOCK_ACCOUNTS.find(a => a.username === user)
+    const acct = loadAccounts().find(a => a.username === user)
     const display = acct?.displayName ?? user
     document.title = `${display} • BookNook`
 
@@ -122,9 +135,22 @@ export default function App(){
   function handleLogin(username, password){
     if(!username) return false
     if(username.toLowerCase() === 'guest'){ setUser('guest'); return true }
-    const acct = MOCK_ACCOUNTS.find(a => a.username === username && a.password === password)
+    const acct = loadAccounts().find(a => a.username === username && a.password === password)
     if(acct){ setUser(acct.username); return true }
     return false
+  }
+
+  function createAccount({username, password, displayName}){
+    if(!username || !password) return { success: false, message: 'Missing username or password' }
+    const accounts = loadAccounts()
+    const exists = accounts.find(a => a.username.toLowerCase() === username.toLowerCase())
+    if(exists) return { success: false, message: 'Username already exists' }
+    const acct = { username, password, displayName: displayName || username, initialBooks: [] }
+    accounts.push(acct)
+    saveAccounts(accounts)
+    try{ localStorage.setItem(`booknook_items_${username}`, JSON.stringify([])) }catch(e){}
+    setUser(username)
+    return { success: true }
   }
 
   function handleLogout(){ setUser(null); setActive('browse') }
@@ -172,9 +198,9 @@ export default function App(){
 
   function confirmLateReturn(){ if(!lateReturnFor) return; setMyBooks(prev => prev.filter(it => it.instanceId !== lateReturnFor.item.instanceId)); setLateReturnFor(null) }
 
-  if(!user) return <LoginScreen onLogin={handleLogin} />
+  if(!user) return <LoginScreen onLogin={handleLogin} onCreateAccount={createAccount} />
 
-  const acct = MOCK_ACCOUNTS.find(a=>a.username===user)
+  const acct = loadAccounts().find(a=>a.username===user)
   const displayName = acct?.displayName ?? (user ? user.charAt(0).toUpperCase()+user.slice(1) : '')
 
   return (
