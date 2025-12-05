@@ -10,7 +10,7 @@ export default function LoginScreen({onLogin, onCreateAccount}){
   function submit(){
     setError(null)
     const ok = onLogin(username.trim(), password)
-    if(!ok) setError('Invalid credentials. Try username/password from the demo accounts (alice/password123, bob/letmein) or use Guest.')
+    if(!ok) setError('Invalid credentials. Try username/password from the demo accounts.')
   }
 
   if(showSignup) return <Signup onCreateAccount={onCreateAccount} onCancel={()=>setShowSignup(false)} />
@@ -34,9 +34,8 @@ export default function LoginScreen({onLogin, onCreateAccount}){
         <label className="block text-sm text-gray-600 mt-4 mb-2">Password</label>
         <input type="password" value={password} onChange={e=>setPassword(e.target.value)} className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-gblue transition" placeholder="••••••" />
 
-        <div className="mt-6 flex gap-3">
-          <button onClick={submit} className="flex-1 py-3 rounded-lg bg-gblue text-white font-medium">Sign in</button>
-          <button onClick={() => { setUsername('guest'); setPassword(''); const ok = onLogin('guest', ''); if(!ok) setError('Unable to sign in as Guest') }} className="py-3 px-4 rounded-lg border border-gray-200">Try Guest</button>
+        <div className="mt-6">
+          <button onClick={submit} className="w-full py-3 rounded-lg bg-gblue text-white font-medium">Sign in</button>
         </div>
 
         <p className="text-xs text-gray-400 mt-4">Demo accounts: <span className="font-medium">alice / password123</span>, <span className="font-medium">bob / letmein</span>. <button onClick={()=>setShowSignup(true)} className="ml-2 underline text-gblue">Create account</button></p>
