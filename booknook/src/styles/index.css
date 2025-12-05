@@ -1,0 +1,6 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* custom small utility */
+.cover-placeholder{display:flex;align-items:center;justify-content:center;color:white;font-weight:700}
