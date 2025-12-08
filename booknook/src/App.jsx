@@ -78,7 +78,7 @@ export default function App(){
     const instance = {
       instanceId: `i_${Date.now()}_${Math.random().toString(36).slice(2,6)}`,
       id: book.id, title: book.title, author: book.author, isbn: book.isbn,
-      type: 'borrowed', received: false, borrowDate: new Date().toISOString(), dueDate: addDays(new Date(), 14).toISOString()
+      type: 'borrowed', received: false, borrowDate: new Date().toISOString(), dueDate: addDays(new Date(), 3).toISOString()
     }
     setMyBooks(prev => [instance, ...prev])
     setActive('mybooks')

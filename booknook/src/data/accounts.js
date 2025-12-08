@@ -8,7 +8,7 @@ export const MOCK_ACCOUNTS = [
     initialBooks: [
       {
         instanceId: 'i_demo_1', id: 'b1', title: 'Pride and Prejudice', author: 'Jane Austen', isbn: '9780141439518',
-        type: 'borrowed', received: false, borrowDate: new Date().toISOString(), dueDate: addDays(new Date(), 7).toISOString()
+        type: 'borrowed', received: false, borrowDate: addDays(new Date(), -5).toISOString(), dueDate: addDays(new Date(), -2).toISOString()
       },
       {
         instanceId: 'i_demo_2', id: 'b16', title: 'The Great Gatsby', author: 'F. Scott Fitzgerald', isbn: '9780743273565',
