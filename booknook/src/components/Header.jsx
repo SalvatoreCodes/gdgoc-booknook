@@ -23,6 +23,7 @@ export default function Header({user, active, setActive, onLogout}){
             <button onClick={() => setActive('mybooks')} className={`px-3 py-2 rounded-md ${active==='mybooks' ? 'bg-gray-100 text-gray-900' : 'text-gray-500 hover:text-gray-700'}`}>
               My Books
             </button>
+            <button onClick={() => setActive('dashboard')} className={`px-3 py-2 rounded-md ${active==='dashboard' ? 'bg-gray-100 text-gray-900' : 'text-gray-500 hover:text-gray-700'}`}>Dashboard</button>
           </nav>
         </div>
 

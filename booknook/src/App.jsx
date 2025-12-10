@@ -6,10 +6,12 @@ import PaymentModal from './components/PaymentModal'
 import LateFeeModal from './components/LateFeeModal'
 import LoginScreen from './components/LoginScreen'
 import BookDetailModal from './components/BookDetailModal'
+import Dashboard from './components/Dashboard'
 import useLocalStorage from './hooks/useLocalStorage'
 import { MOCK_BOOKS } from './data/data'
 import { MOCK_ACCOUNTS } from './data/accounts'
 import { addDays } from './utils'
+import { useReadBook } from "./hooks/readBook"
 
 function loadAccounts(){
   try{
@@ -32,6 +34,10 @@ export default function App(){
   const [lateReturnFor, setLateReturnFor] = useState(null)
   const [selectedBook, setSelectedBook] = useState(null)
   const [borrowToast, setBorrowToast] = useState(false)
+
+  useEffect(() => {
+    useReadBook();
+  }, [])
 
   useEffect(()=>{
     if(!user){ document.title = 'BookNook'; setMyBooks([]); return }
@@ -129,6 +135,7 @@ export default function App(){
         <div className="bg-white rounded-2xl shadow-sm overflow-hidden">
           {active === 'browse' && <Browse books={MOCK_BOOKS} onBorrow={borrowBook} onBuy={buyBook} onReadMore={setSelectedBook} />}
           {active === 'mybooks' && <MyBooks items={myBooks} onToggleReceived={toggleReceived} onReturn={handleReturn} onDelete={deleteOwned} />}
+          {active === 'dashboard' && <Dashboard />}
         </div>
       </main>
 
