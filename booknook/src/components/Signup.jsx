@@ -1,11 +1,14 @@
 import React, { useState } from 'react'
+import { auth } from '../firebase'
+import { createUserWithEmailAndPassword } from 'firebase/auth'
 
-export default function Signup({ onCreateAccount, onCancel }){
+export default function Signup({ onCreateAccount, onCancel, onLogin }){
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
-  const [displayName, setDisplayName] = useState('')
+  const [email, setEmail] = useState('')
   const [error, setError] = useState(null)
   const [loading, setLoading] = useState(false)
+  const [showLogin, setShowLogin] = useState(false)
 
   async function submit(e){
     e && e.preventDefault()
@@ -14,12 +17,15 @@ export default function Signup({ onCreateAccount, onCancel }){
     if(!u) return setError('Choose a username')
     if(!password) return setError('Choose a password')
     setLoading(true)
-    try{
-      const res = await onCreateAccount({ username: u, password, displayName: displayName || u })
-      if(!res || !res.success) setError(res?.message || 'Unable to create account')
-    }catch(err){ setError('Error creating account') }
+    try {
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      onLogin && onLogin(userCredential.user)
+      onCancel && onCancel()
+    } catch(err){ setError('Error creating account') }
     setLoading(false)
   }
+
+  if (showLogin) return <LoginScreen onLogin={onLogin} onCreateAccount={onCreateAccount} />
 
   return (
     <div className="flex items-center justify-center min-h-screen">
@@ -37,8 +43,8 @@ export default function Signup({ onCreateAccount, onCancel }){
         <label className="block text-sm text-gray-600 mb-2">Username</label>
         <input value={username} onChange={e=>setUsername(e.target.value)} className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-gblue transition" placeholder="username" />
 
-        <label className="block text-sm text-gray-600 mt-4 mb-2">Display name (optional)</label>
-        <input value={displayName} onChange={e=>setDisplayName(e.target.value)} className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-gblue transition" placeholder="Your name" />
+        <label className="block text-sm text-gray-600 mt-4 mb-2">Email</label>
+        <input type="email" value={email} onChange={e=>setEmail(e.target.value)} className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-gblue transition" placeholder="Your email" />
 
         <label className="block text-sm text-gray-600 mt-4 mb-2">Password</label>
         <input type="password" value={password} onChange={e=>setPassword(e.target.value)} className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-gblue transition" placeholder="Choose a password" />
